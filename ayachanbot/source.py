@@ -12,8 +12,11 @@ def search_saucenao(file):
         'output_type': 2
     }, files={'file': file})
     result = json.loads(resp.content.decode())['results'][0]
-    text = f"{yaml.dump(result['header'], allow_unicode=True)}\n\
-        {yaml.dump(result['data'], indent=2, allow_unicode=True)}"
+
+    def dumper(section):
+        return yaml.dump(result[section], allow_unicode=True)
+
+    text = f"{dumper('header')}\n{dumper('data')}"
     return text
 
 
