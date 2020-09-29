@@ -1,4 +1,5 @@
 import json
+import logging
 
 import requests
 import yaml
@@ -11,7 +12,15 @@ def search_saucenao(file):
         'database': 999,
         'output_type': 2
     }, files={'file': file})
-    result = json.loads(resp.content.decode())['results'][0]
+    status_code = resp.status_code
+    content = resp.content.decode()
+    if status_code != 200:
+        log_f = logging.error
+    else:
+        log_f = logging.info
+    log_f(f'status_code: {status_code}, content: {content}')
+
+    result = json.loads(content)['results'][0]
 
     def dumper(section):
         return yaml.dump(result[section], allow_unicode=True)
