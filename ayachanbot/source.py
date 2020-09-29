@@ -2,7 +2,6 @@ import json
 import logging
 
 import requests
-import yaml
 
 
 def search_saucenao(file):
@@ -22,13 +21,7 @@ def search_saucenao(file):
         log_f = logging.info
     log_f(f'status_code:{status_code},content:{json.dumps(content, ensure_ascii=False)}')
 
-    result = content['results'][0]
-
-    def dumper(section):
-        return yaml.dump(result[section], allow_unicode=True)
-
-    text = f"{dumper('header')}\n{dumper('data')}"
-    return text
+    return content['results']
 
 
 def search_ascii2d(file):
