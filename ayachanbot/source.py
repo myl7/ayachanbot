@@ -13,14 +13,16 @@ def search_saucenao(file):
         'output_type': 2
     }, files={'file': file})
     status_code = resp.status_code
-    content = resp.content.decode()
+    content = json.loads(resp.content.decode())
+    content['header'].pop('index')
+
     if status_code != 200:
         log_f = logging.error
     else:
         log_f = logging.info
-    log_f(f'status_code: {status_code}, content: {content}')
+    log_f(f'status_code:{status_code},content:{json.dumps(content, ensure_ascii=False)}')
 
-    result = json.loads(content)['results'][0]
+    result = content['results'][0]
 
     def dumper(section):
         return yaml.dump(result[section], allow_unicode=True)
