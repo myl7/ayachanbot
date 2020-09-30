@@ -11,16 +11,15 @@ def search_saucenao(file):
         'database': 999,
         'output_type': 2
     }, files={'file': file})
-    status_code = resp.status_code
-    content = json.loads(resp.content.decode())
+    content = resp.content.decode()
+
+    if resp.status_code != 200:
+        logging.error(f'saucenao failed:{content}')
+        return
+
+    content = json.loads(content)
     content['header'].pop('index')
-
-    if status_code != 200:
-        log_f = logging.error
-    else:
-        log_f = logging.info
-    log_f(f'status_code:{status_code},content:{json.dumps(content, ensure_ascii=False)}')
-
+    logging.info(f'saucenao:{json.dumps(content, ensure_ascii=False)}')
     return content['results']
 
 
