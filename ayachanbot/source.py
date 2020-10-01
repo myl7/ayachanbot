@@ -16,7 +16,7 @@ def search_saucenao(file):
     content = resp.content.decode()
 
     if resp.status_code != 200:
-        logging.error(f'saucenao failed:{content}')
+        logging.error(f'saucenao request failed:{content}')
         return
 
     content = json.loads(content)
@@ -33,7 +33,7 @@ def search_ascii2d(file):
     token_content = token_resp.content.decode()
 
     if token_resp.status_code != 200:
-        logging.error(f"ascii2d failed:{compress_html(token_content)}")
+        logging.error(f"ascii2d request token failed:{compress_html(token_content)}")
         return
 
     token_soup = BeautifulSoup(token_content, 'html.parser')
@@ -41,7 +41,7 @@ def search_ascii2d(file):
 
     file_type = imghdr.what(file)
     if file_type is None:
-        logging.error("ascii2d failed:unknown filetype")
+        logging.error("ascii2d check filetype failed:unknown filetype")
         return
     file.seek(0)
 
@@ -52,7 +52,7 @@ def search_ascii2d(file):
     color_content = color_resp.content.decode()
 
     if color_resp.status_code != 200:
-        logging.error(f"ascii2d color failed:{compress_html(color_content)}")
+        logging.error(f"ascii2d request color failed:{compress_html(color_content)}")
         return
 
     results = {'color': parse_ascii2d(color_content, color_resp.url)}
@@ -61,7 +61,7 @@ def search_ascii2d(file):
     bovw_content = bovw_resp.content.decode()
 
     if bovw_resp.status_code != 200:
-        logging.error(f'ascii2d bovw failed:{compress_html(bovw_content)}')
+        logging.error(f'ascii2d request bovw failed:{compress_html(bovw_content)}')
         return results
 
     results['bovw'] = parse_ascii2d(bovw_content, bovw_url)
