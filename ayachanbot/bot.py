@@ -5,7 +5,7 @@ from io import BytesIO
 from telegram import Update, Message, PhotoSize
 from telegram.ext import Updater, CallbackContext as Context, MessageHandler, Filters, Dispatcher
 
-from .source import search_saucenao
+from .source import search_saucenao, search_ascii2d
 from .report import Report
 
 updater = Updater(token=os.getenv('BOT_TOKEN'), use_context=True)
@@ -22,6 +22,8 @@ def search_image(update: Update, context: Context):
 
     photo.seek(0)
     saucenao_results = search_saucenao(photo)
+    photo.seek(0)
+    ascii2d_results = search_ascii2d(photo)
 
     texts = Report().set_saucenao_results(saucenao_results).gen_report()
     for text in texts:
