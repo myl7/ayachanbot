@@ -74,7 +74,7 @@ def parse_ascii2d(content, base_url):
     items.pop(0)
 
     def parse_link_group(source):
-        link_group = [{'name': elem.string, 'url': elem['href']} for elem in source.select('a')]
+        link_group = [{'name': str(elem.string), 'url': elem['href']} for elem in source.select('a')]
         if source.contents[0].name == 'img':
             link_group = link_group[1:]
         return link_group
@@ -82,8 +82,8 @@ def parse_ascii2d(content, base_url):
     return [
         {
             'thumbnail': base_url + item.select_one('.image-box > img')['src'],
-            'hash': item.select_one('.info-box > div.hash').string,
-            'size': item.select_one('.info-box > small').string,
+            'hash': str(item.select_one('.info-box > div.hash').string),
+            'size': str(item.select_one('.info-box > small').string),
             'links': [parse_link_group(source) for source in item.select('.detail-box > h6')]
         }
         for item in items

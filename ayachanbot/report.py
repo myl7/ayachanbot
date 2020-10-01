@@ -46,6 +46,7 @@ class Report:
                 results = preprocess_results(results)
                 for result in results:
                     text += f"{dumps(result)}{sep}\n"
+                texts.append(text)
 
             if self.ascii2d_results.get('bovw', None):
                 text = f'ascii2d feature results:\n{sep}\n'
@@ -53,6 +54,7 @@ class Report:
                 results = preprocess_results(results)
                 for result in results:
                     text += f"{dumps(result)}{sep}\n"
+                texts.append(text)
 
-        text = f"{sep}\n{sum(texts, '')}"
+        text = f"{sep}\n{''.join(texts)}"
         return text
