@@ -23,7 +23,7 @@ class Report:
         sep = '-' * 80
 
         def dumps(d):
-            return yaml.dump(d, allow_unicode=True)
+            return yaml.safe_dump(d, allow_unicode=True)
 
         if self.saucenao_results:
             text = f"SauceNAO results:\n{sep}\n"
