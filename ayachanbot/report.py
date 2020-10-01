@@ -15,33 +15,44 @@ class Report:
         return self
 
     def gen_report(self):
+        saucenao_limit = 1
+        ascii2d_color_limit = 1
+        ascii2d_bovm_limit = 1
+
         texts = []
-        sep = f"\n{'-' * 80}\n"
+        sep = '-' * 80
+
+        def dumps(d):
+            return yaml.dump(d, allow_unicode=True)
 
         if self.saucenao_results:
-            def dumper(res, section):
-                return yaml.dump(res[section], allow_unicode=True)
-
-            text = f"SauceNAO results:{sep}"
-            saucenao_limit = 1
+            text = f"SauceNAO results:\n{sep}\n"
             for result in self.saucenao_results[:saucenao_limit]:
-                text += f"{dumper(result, 'header')}\n{dumper(result, 'data')}"[:-1]
+                text += f"{dumps(result['header'])}\n{dumps(result['data'])}{sep}\n"
             texts.append(text)
 
         if self.ascii2d_results:
-            text = f'ascii2d results:{sep}'
+            def display_link(link):
+                return f"{link['name']}: {link['url']}" if link['url'] else link['name']
 
-            ascii2d_color_results = self.ascii2d_results['color']
-            # noinspection PyUnusedLocal
-            ascii2d_color_limit = 1
-            ascii2d_color_results.update(ascii2d_color_results['sources'][0])
-            text += f'ascii2d color results:\n{yaml.dump(ascii2d_color_results, allow_unicode=True)}\n'
+            def preprocess_results(res_list):
+                for res in res_list:
+                    res['links'] = [[display_link(link) for link in link_group] for link_group in res['links']]
+                return res_list
 
-            ascii2d_bovm_results = self.ascii2d_results['bovm']
-            # noinspection PyUnusedLocal
-            ascii2d_bovm_limit = 1
-            ascii2d_bovm_results.update(ascii2d_bovm_results['sources'][0])
-            text += f'ascii2d bovm results:\n{yaml.dump(ascii2d_bovm_results, allow_unicode=True)}'[:-1]
+            if self.ascii2d_results.get('color', None):
+                text = f'ascii2d color results:\n{sep}\n'
+                results = self.ascii2d_results['color'][:ascii2d_color_limit]
+                results = preprocess_results(results)
+                for result in results:
+                    text += f"{dumps(result)}{sep}\n"
 
-        text = f"{'-' * 80}\n{sep.join(texts)}{'-' * 80}"
+            if self.ascii2d_results.get('bovm', None):
+                text = f'ascii2d feature results:\n{sep}\n'
+                results = self.ascii2d_results['bovm'][:ascii2d_bovm_limit]
+                results = preprocess_results(results)
+                for result in results:
+                    text += f"{dumps(result)}{sep}\n"
+
+        text = f"{sep}\n{sum(texts, '')}"
         return text
