@@ -25,9 +25,10 @@ def search_image(update: Update, context: Context):
     photo.seek(0)
     ascii2d_results = search_ascii2d(photo)
 
-    texts = Report().set_saucenao_results(saucenao_results).gen_report()
-    for text in texts:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=text, reply_to_message_id=message.message_id)
+    report = Report() \
+        .set_saucenao_results(saucenao_results) \
+        .set_ascii2d_results(ascii2d_results).gen_report()
+    context.bot.send_message(chat_id=update.effective_chat.id, text=report, reply_to_message_id=message.message_id)
 
 
 search_image_handler = MessageHandler(Filters.photo, search_image)

@@ -57,8 +57,25 @@ def search_ascii2d(file):
 
 
 def parse_ascii2d(content, base_url):
-    content = BeautifulSoup(content)
-    return ''
+    items = BeautifulSoup(content).select('.item-box')
+    items.pop(0)
+    return [
+        {
+            'thumbnail': base_url + item.select_one('.image-box > img')['src'],
+            'size': item.select_one('.info-box > small').string,
+            'sources': [
+                {
+                    'link': source.contents[1].href,
+                    'title': source.contents[1].string,
+                    'author': source.contents[2].string,
+                    'author_link': source.contents[1].href,
+                    'site': source.contents[3].string
+                }
+                for source in item.select_one('.detail_box > h6')
+            ]
+        }
+        for item in items
+    ]
 
 
 def search_nhentai(file):
