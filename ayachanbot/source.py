@@ -56,15 +56,15 @@ def search_ascii2d(file):
         return
 
     results = {'color': parse_ascii2d(color_content, color_resp.url)}
-    bovm_url = color_resp.url.replace('/color/', '/bovm/')
-    bovm_resp = requests.get(bovm_url)
-    bovm_content = bovm_resp.content.decode()
+    bovw_url = color_resp.url.replace('/color/', '/bovw/')
+    bovw_resp = requests.get(bovw_url)
+    bovw_content = bovw_resp.content.decode()
 
-    if bovm_resp.status_code != 200:
-        logging.error(f'ascii2d bovm failed:{compress_html(bovm_content)}')
+    if bovw_resp.status_code != 200:
+        logging.error(f'ascii2d bovw failed:{compress_html(bovw_content)}')
         return results
 
-    results['bovm'] = parse_ascii2d(bovm_content, bovm_url)
+    results['bovw'] = parse_ascii2d(bovw_content, bovw_url)
     logging.info(f'ascii2d:{json.dumps(results, ensure_ascii=False)}')
     return results
 

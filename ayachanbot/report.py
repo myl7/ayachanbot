@@ -17,7 +17,7 @@ class Report:
     def gen_report(self):
         saucenao_limit = 1
         ascii2d_color_limit = 1
-        ascii2d_bovm_limit = 1
+        ascii2d_bovw_limit = 1
 
         texts = []
         sep = '-' * 80
@@ -47,9 +47,9 @@ class Report:
                 for result in results:
                     text += f"{dumps(result)}{sep}\n"
 
-            if self.ascii2d_results.get('bovm', None):
+            if self.ascii2d_results.get('bovw', None):
                 text = f'ascii2d feature results:\n{sep}\n'
-                results = self.ascii2d_results['bovm'][:ascii2d_bovm_limit]
+                results = self.ascii2d_results['bovw'][:ascii2d_bovw_limit]
                 results = preprocess_results(results)
                 for result in results:
                     text += f"{dumps(result)}{sep}\n"
