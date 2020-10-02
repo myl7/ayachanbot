@@ -1,6 +1,6 @@
 # ayachanbot
 
-(Currently) a image searching Telegram bot
+(Currently) an anime image searching Telegram bot
 
 ## Get Started
 
@@ -11,6 +11,12 @@ export BOT_TOKEN=<your bot token>
 ```
 
 Optionally setup proxy if you require it.
+
+Ensure temp dir for images:
+
+```bash
+mkdir -p /tmp/ayachanbot
+```
 
 Then run the package directly to start the bot:
 
