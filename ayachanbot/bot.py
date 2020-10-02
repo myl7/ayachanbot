@@ -1,6 +1,5 @@
 import os
 import logging
-from io import BytesIO
 
 from telegram import Update, Message, PhotoSize
 from telegram.ext import Updater, CallbackContext as Context, MessageHandler, Filters, Dispatcher
@@ -19,16 +18,15 @@ logging.basicConfig(level=logging.INFO)
 def search_image(update: Update, context: Context):
     message: Message = update.effective_message
     photo_size: PhotoSize = message.photo[-1]
-    photo = BytesIO()
-    context.bot.get_file(photo_size.file_id).download(out=photo)
 
-    photo.seek(0)
-    saucenao_results = search_saucenao(photo)
-    photo.seek(0)
-    ascii2d_results = search_ascii2d(photo)
-    photo.seek(0)
-    whatanime_results = search_whatanime(photo)
-    photo.seek(0)
+    tmp_dir = '/tmp/ayachanbot/'
+    filepath = tmp_dir + photo_size.file_id
+    with open(filepath, 'wb') as f:
+        context.bot.get_file(photo_size.file_id).download(out=f)
+
+    saucenao_results = search_saucenao(filepath)
+    ascii2d_results = search_ascii2d(filepath)
+    whatanime_results = search_whatanime(filepath)
 
     report = Report() \
         .set_saucenao_results(saucenao_results) \

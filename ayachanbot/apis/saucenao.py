@@ -2,9 +2,11 @@ import json
 
 import requests
 
+from . import handle_file
 from .log import log_error, log_success
 
 
+@handle_file
 def search_saucenao(file):
     resp = requests.post('https://saucenao.com/search.php', {
         'frame': 1,

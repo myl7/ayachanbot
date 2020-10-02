@@ -3,9 +3,11 @@ import imghdr
 import requests
 from bs4 import BeautifulSoup
 
+from . import handle_file
 from .log import log_error, log_success
 
 
+@handle_file
 def search_ascii2d(file):
     token_resp = requests.get('https://ascii2d.net/')
 

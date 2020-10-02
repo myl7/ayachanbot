@@ -2,9 +2,11 @@ from base64 import b64encode
 
 import requests
 
+from . import handle_file
 from .log import log_error, log_success
 
 
+@handle_file
 def search_whatanime(file):
     file.seek(0, 2)
     size = file.tell() / 3 * 4
