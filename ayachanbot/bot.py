@@ -5,7 +5,9 @@ from io import BytesIO
 from telegram import Update, Message, PhotoSize
 from telegram.ext import Updater, CallbackContext as Context, MessageHandler, Filters, Dispatcher
 
-from .source import search_saucenao, search_ascii2d, search_whatanime
+from .apis.saucenao import search_saucenao
+from .apis.ascii2d import search_ascii2d
+from .apis.whatanime import search_whatanime
 from .report import Report
 
 updater = Updater(token=os.getenv('BOT_TOKEN'), use_context=True)
