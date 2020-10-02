@@ -67,6 +67,7 @@ class Report:
             results = self.whatanime_results['docs'][:whatanime_limit]
             for result in results:
                 text += f'{dumps(result)}{sep}\n'
+            texts.append(text)
 
         text = f"{sep}\n{''.join(texts)}"
         return text

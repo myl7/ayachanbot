@@ -102,8 +102,9 @@ def search_whatanime(file):
         logging.error('whatanime filesize error:too large')
         return
 
+    file.seek(0)
     resp = requests.post('https://trace.moe/api/search', json={
-        'image': b64encode(file)
+        'image': b64encode(file.read()).decode()
     })
 
     if resp.status_code != 200:
