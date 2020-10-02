@@ -40,3 +40,4 @@ search_image_handler = MessageHandler(Filters.photo, search_image)
 dispatcher.add_handler(search_image_handler)
 
 updater.start_polling()
+updater.idle()
