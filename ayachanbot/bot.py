@@ -7,7 +7,7 @@ from telegram.ext import Updater, CallbackContext as Context, MessageHandler, Fi
 from .apis.saucenao import search_saucenao
 from .apis.ascii2d import search_ascii2d
 from .apis.whatanime import search_whatanime
-from .report import Report
+from .reports import report_saucenao, report_ascii2d, report_whatanime
 
 updater = Updater(token=os.getenv('BOT_TOKEN'), use_context=True)
 dispatcher: Dispatcher = updater.dispatcher
@@ -28,12 +28,15 @@ def search_image(update: Update, context: Context):
     ascii2d_results = search_ascii2d(filepath)
     whatanime_results = search_whatanime(filepath)
 
-    report = Report() \
-        .set_saucenao_results(saucenao_results) \
-        .set_ascii2d_results(ascii2d_results) \
-        .set_whatanime_results(whatanime_results) \
-        .gen_report()
-    context.bot.send_message(chat_id=update.effective_chat.id, text=report, reply_to_message_id=message.message_id)
+    def reply(text):
+        context.bot.send_message(chat_id=update.effective_chat.id, text=text, reply_to_message_id=message.message_id)
+
+    for text in report_saucenao(saucenao_results):
+        reply(text)
+    for text in report_ascii2d(ascii2d_results):
+        reply(text)
+    for text in report_whatanime(whatanime_results):
+        reply(text)
 
 
 search_image_handler = MessageHandler(Filters.photo, search_image)
