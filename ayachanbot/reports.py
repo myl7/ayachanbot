@@ -62,4 +62,4 @@ def report_whatanime(results):
 
 
 def dumps(d):
-    return yaml.safe_dump(d, allow_unicode=True)
+    return yaml.safe_dump(d, allow_unicode=True, sort_keys=False)
