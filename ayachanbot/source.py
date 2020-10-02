@@ -1,6 +1,7 @@
 import json
 import logging
 import imghdr
+from base64 import b64encode
 
 import requests
 from bs4 import BeautifulSoup
@@ -95,4 +96,20 @@ def search_nhentai(file):
 
 
 def search_whatanime(file):
-    raise NotImplementedError()
+    file.seek(0, 2)
+    size = file.tell() / 3 * 4
+    if size > 10 * 1024 * 1024:
+        logging.error('whatanime filesize error:too large')
+        return
+
+    resp = requests.post('https://trace.moe/api/search', json={
+        'image': b64encode(file)
+    })
+
+    if resp.status_code != 200:
+        logging.error(f'whatanime request failed:{json.dumps(resp.content.decode())}')
+        return
+
+    results = resp.json()
+    logging.info(f'whatanime:{json.dumps(results, ensure_ascii=False)}')
+    return results
