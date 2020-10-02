@@ -33,7 +33,7 @@ def search_ascii2d(file):
         log_error('ascii2d request color failed', color_resp)
         return
 
-    results = {'color': parse_ascii2d_content(color_resp.content.decode(), color_resp.url)}
+    results = {'color': parse_ascii2d_content(color_resp.content.decode())}
     bovw_url = color_resp.url.replace('/color/', '/bovw/')
     bovw_resp = requests.get(bovw_url)
 
@@ -42,12 +42,12 @@ def search_ascii2d(file):
         log_success('ascii2d', results)
         return results
 
-    results['bovw'] = parse_ascii2d_content(bovw_resp.content.decode(), bovw_url)
+    results['bovw'] = parse_ascii2d_content(bovw_resp.content.decode())
     log_success('ascii2d', results)
     return results
 
 
-def parse_ascii2d_content(content, base_url):
+def parse_ascii2d_content(content):
     items = BeautifulSoup(content, 'html.parser').select('.item-box')
     items.pop(0)
 
@@ -59,7 +59,7 @@ def parse_ascii2d_content(content, base_url):
 
     return [
         {
-            'thumbnail': base_url + item.select_one('.image-box > img')['src'],
+            'thumbnail': 'https://ascii2d.net' + item.select_one('.image-box > img')['src'],
             'hash': str(item.select_one('.info-box > div.hash').string),
             'size': str(item.select_one('.info-box > small').string),
             'links': [parse_link_group(source) for source in item.select('.detail-box > h6')]
