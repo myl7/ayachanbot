@@ -1,5 +1,6 @@
 import os
 import logging
+from multiprocessing.dummy import Pool as ThreadPool
 
 from telegram import Update, Message, PhotoSize
 from telegram.ext import Updater, CallbackContext as Context, MessageHandler, Filters, Dispatcher
@@ -24,19 +25,20 @@ def search_image(update: Update, context: Context):
     with open(filepath, 'wb') as f:
         context.bot.get_file(photo_size.file_id).download(out=f)
 
-    saucenao_results = search_saucenao(filepath)
-    ascii2d_results = search_ascii2d(filepath)
-    whatanime_results = search_whatanime(filepath)
+    def search(api, report):
+        results = api(filepath)
+        for t in report(results):
+            reply(t)
 
-    def reply(text):
-        context.bot.send_message(chat_id=update.effective_chat.id, text=text, reply_to_message_id=message.message_id)
+    def reply(t):
+        context.bot.send_message(chat_id=update.effective_chat.id, text=t, reply_to_message_id=message.message_id)
 
-    for text in report_saucenao(saucenao_results):
-        reply(text)
-    for text in report_ascii2d(ascii2d_results):
-        reply(text)
-    for text in report_whatanime(whatanime_results):
-        reply(text)
+    with ThreadPool(3) as pool:
+        pool.starmap(search, [
+            (search_saucenao, report_saucenao),
+            (search_ascii2d, report_ascii2d),
+            (search_whatanime, report_whatanime)
+        ])
 
 
 search_image_handler = MessageHandler(Filters.photo, search_image)
