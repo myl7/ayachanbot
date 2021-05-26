@@ -2,7 +2,7 @@ import os
 import logging
 
 from dotenv import load_dotenv
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 from . import handlers
 
@@ -17,6 +17,12 @@ def main():
 
     start_handler = CommandHandler('start', handlers.handle_start)
     dispatcher.add_handler(start_handler)
+
+    anime_image_searching_handler = MessageHandler(
+        Filters.photo & Filters.caption(['anime']),
+        handlers.handle_anime_image_searching
+    )
+    dispatcher.add_handler(anime_image_searching_handler)
 
     updater.start_polling()
 
